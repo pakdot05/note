@@ -2,11 +2,6 @@
 session_start();
 include('includes/config.php'); // Ensure this path is correct
 
-// Check if the connection is established
-if (!isset($conn)) {
-    die("Database connection not established.");
-}
-
 $error = ""; // Variable to store error message
 
 if (isset($_POST['signin'])) {
