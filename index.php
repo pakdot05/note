@@ -195,5 +195,3 @@ if (isset($_POST['signin'])) {
     </style>
 </body>
 </html>
-
-
