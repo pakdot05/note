@@ -2,34 +2,38 @@
 session_start();
 include('includes/config.php'); // Ensure this path is correct
 
-// Check if the connection is established
-if (!isset($conn)) {
-    die("Database connection not established.");
-}
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 $error = ""; // Variable to store error message
 
 if (isset($_POST['signin'])) {
     $email = $_POST['email'];
-    $password = md5($_POST['password']); // Consider using password_hash() and password_verify() for better security
+    $password = $_POST['password']; // Don't hash yet, we do it in the database check
 
     if (!empty($email) && !empty($password)) {
         // Prepare the SQL statement
-        $stmt = $conn->prepare("SELECT * FROM register WHERE email = ? AND password = ?");
-        $stmt->bind_param("ss", $email, $password);
+        $stmt = $conn->prepare("SELECT * FROM register WHERE email = ?");
+        $stmt->bind_param("s", $email);
         
         if ($stmt->execute()) { // Check if execution is successful
             $result = $stmt->get_result();
             if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
+                $row = $result->fetch_assoc();
+                // Verify password
+                if (password_verify($password, $row['password'])) {
                     $_SESSION['alogin'] = $row['user_ID'];
                     echo "<script type='text/javascript'> document.location = 'notebook.php'; </script>";
+                } else {
+                    $error = "Invalid email or password.";
                 }
             } else {
                 $error = "Invalid email or password."; // Set error message
             }
         } else {
             $error = "Query execution failed: " . $stmt->error; // Error on execution
+            error_log("SQL Error: " . $stmt->error); // Log error to server error log
         }
     } else {
         $error = "Email and password are required."; // Set error message
