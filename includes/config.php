@@ -1,20 +1,20 @@
 <?php
 
-define('DB_HOST','localhost');
-define('DB_USER','root');
-define('DB_PASS','');
-define('DB_NAME','pix');
+$host = getenv('DB_HOST') ?: ''; 
+$user = getenv('DB_USERNAME') ?: '';  
+$pass = getenv('DB_PASSWORD') ?: '';      
+$dbname = getenv('DB_DATABASE') ?: '';  
+$port = getenv('DB_PORT') ?: '3306';   
 
-$conn = mysqli_connect('localhost','root','','pix') or die(mysqli_error());
+// Establish database connection using PDO
+try {
+    $dbh = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $user, $pass, [
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"
+    ]);
+} catch (PDOException $e) {
+    exit("Error: " . $e->getMessage());
+}
 
-// Establish database connection.
-try
-{
-$dbh = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME,DB_USER, DB_PASS,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
-}
-catch (PDOException $e)
-{
-exit("Error: " . $e->getMessage());
-}
+?>
 
 ?>
