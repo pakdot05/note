@@ -1,25 +1,12 @@
 <?php
 session_start();
-
-// Database configuration
-$servername = "localhost"; // or your database server
-$username = "your_username"; // your database username
-$password = "your_password"; // your database password
-$dbname = "your_database"; // your database name
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error); // This will show if the connection failed
-}
+include('includes/config.php'); // Ensure this path is correct
 
 $error = ""; // Variable to store error message
 
 if (isset($_POST['signin'])) {
     $email = $_POST['email'];
-    $password = md5($_POST['password']); // Use password_hash() and password_verify() for better security
+    $password = md5($_POST['password']); // Consider using password_hash() and password_verify() for better security
 
     if (!empty($email) && !empty($password)) {
         // Prepare the SQL statement
@@ -43,8 +30,6 @@ if (isset($_POST['signin'])) {
         $error = "Email and password are required."; // Set error message
     }
 }
-
-// If there are any error messages, they will be shown in the form
 ?>
 
 <!DOCTYPE html>
@@ -210,4 +195,5 @@ if (isset($_POST['signin'])) {
     </style>
 </body>
 </html>
+
 
